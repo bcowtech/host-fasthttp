@@ -20,5 +20,5 @@ func (m *XHttpMethodHeaderMiddleware) Init(appCtx *host.AppContext) {
 	routeResolveModule := &XHttpMethodHeaderRouteResolveModule{
 		headers: m.Headers,
 	}
-	preparer.RegisterRequestRouteResolveModule(routeResolveModule)
+	preparer.RegisterRouteResolveModule(routeResolveModule)
 }

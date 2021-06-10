@@ -14,7 +14,7 @@ func (p *FasthttpHostPreparer) RegisterRequestHandleModule(successor RequestHand
 	p.subject.requestWorker.requestHandleService.Register(successor)
 }
 
-func (p *FasthttpHostPreparer) RegisterRequestRouteResolveModule(successor RouteResolveModule) {
+func (p *FasthttpHostPreparer) RegisterRouteResolveModule(successor RouteResolveModule) {
 	p.subject.requestWorker.routeResolveService.Register(successor)
 }
 
