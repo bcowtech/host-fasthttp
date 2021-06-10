@@ -9,6 +9,7 @@ import (
 	"github.com/bcowtech/host"
 	"github.com/bcowtech/host-fasthttp/internal"
 	"github.com/bcowtech/structproto"
+	"github.com/bcowtech/structproto/tagresolver"
 	"github.com/bcowtech/structproto/util/reflectutil"
 )
 
@@ -53,7 +54,7 @@ func (b *ResourceManagerBinder) Deinit(context *structproto.StructProtoContext) 
 func (b *ResourceManagerBinder) preformBindResource(target reflect.Value, binder *ResourceBinder) error {
 	prototype, err := structproto.Prototypify(target,
 		&structproto.StructProtoResolveOption{
-			TagResolver: NoneTagResolver,
+			TagResolver: tagresolver.NoneTagResolver,
 		})
 	if err != nil {
 		return err
