@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/bcowtech/config"
-	"github.com/bcowtech/host"
 	fasthttp "github.com/bcowtech/host-fasthttp"
 	"github.com/bcowtech/host-fasthttp/response"
 )
@@ -42,8 +41,8 @@ func TestApp(t *testing.T) {
 	var errorCount = 0
 
 	app := App{}
-	starter := fasthttp.Startup(&app,
-		[]host.Middleware{
+	starter := fasthttp.Startup(&app).
+		Middlewares(
 			fasthttp.UseResourceManager(&ResourceManager{}),
 			fasthttp.UseXHttpMethodHeader(),
 			fasthttp.UseErrorHandler(func(ctx *fasthttp.RequestCtx, err interface{}) {
@@ -65,7 +64,7 @@ func TestApp(t *testing.T) {
 			fasthttp.UseUnhandledRequestHandler(func(ctx *fasthttp.RequestCtx) {
 				ctx.SetStatusCode(fasthttp.StatusNotFound)
 			}),
-		}...).
+		).
 		ConfigureConfiguration(func(service *config.ConfigurationService) {
 			service.
 				LoadEnvironmentVariables("").

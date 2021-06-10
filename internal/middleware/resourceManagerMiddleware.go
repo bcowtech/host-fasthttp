@@ -29,7 +29,7 @@ func (m *ResourceManagerMiddleware) Init(appCtx *host.AppContext) {
 
 func (m *ResourceManagerMiddleware) performBindResourceManager(target interface{}, binder *ResourceManagerBinder) error {
 	prototype, err := structproto.Prototypify(target,
-		&structproto.StructProtoOption{
+		&structproto.StructProtoResolveOption{
 			TagName:     TAG_URL,
 			TagResolver: UrlTagResolver,
 		},

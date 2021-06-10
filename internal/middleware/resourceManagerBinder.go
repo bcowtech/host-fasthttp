@@ -52,7 +52,7 @@ func (b *ResourceManagerBinder) Deinit(context *structproto.StructProtoContext) 
 
 func (b *ResourceManagerBinder) preformBindResource(target reflect.Value, binder *ResourceBinder) error {
 	prototype, err := structproto.Prototypify(target,
-		&structproto.StructProtoOption{
+		&structproto.StructProtoResolveOption{
 			TagResolver: NoneTagResolver,
 		})
 	if err != nil {

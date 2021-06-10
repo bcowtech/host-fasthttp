@@ -5,9 +5,9 @@ import (
 	"github.com/bcowtech/host-fasthttp/internal"
 )
 
-func Startup(app interface{}, middlewares ...host.Middleware) *host.Starter {
+func Startup(app interface{}) *host.Starter {
 	var (
-		starter = host.Startup(app, middlewares...)
+		starter = host.Startup(app)
 	)
 
 	host.RegisterHostService(starter, internal.FasthttpHostServiceInstance)
