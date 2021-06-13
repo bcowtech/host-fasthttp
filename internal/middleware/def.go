@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	"github.com/bcowtech/host-fasthttp/internal"
+	"github.com/bcowtech/host-fasthttp/response"
 )
 
 var (
@@ -20,7 +21,7 @@ type (
 
 	EventLog interface {
 		WriteError(ctx *internal.RequestCtx, err interface{}, stackTrace []byte)
-		WriteResponse(ctx *internal.RequestCtx)
+		WriteResponse(ctx *internal.RequestCtx, flag response.ResponseFlag)
 		Flush()
 	}
 )

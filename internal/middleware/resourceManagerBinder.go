@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"strings"
 
@@ -60,30 +59,7 @@ func (b *ResourceManagerBinder) preformBindResource(target reflect.Value, binder
 		return err
 	}
 
-	err = prototype.Bind(binder)
-	if err != nil {
-		return err
-	}
-
-	// TODO: see if work, when move the following statements into ResourceBinder.Deinit()
-	// call resource.Init()
-	ctx := structproto.StructProtoContext(*prototype)
-	rv := ctx.Target()
-	if rv.CanAddr() {
-		rv = rv.Addr()
-		// call resource.Init()
-		fn := rv.MethodByName(host.APP_COMPONENT_INIT_METHOD)
-		if fn.IsValid() {
-			if fn.Kind() != reflect.Func {
-				log.Fatalf("[bcowtech/host-fasthttp] cannot find func %s() within type %s\n", host.APP_COMPONENT_INIT_METHOD, rv.Type().String())
-			}
-			if fn.Type().NumIn() != 0 || fn.Type().NumOut() != 0 {
-				log.Fatalf("[bcowtech/host-fasthttp] %s.%s() type should be func()\n", rv.Type().String(), host.APP_COMPONENT_INIT_METHOD)
-			}
-			fn.Call([]reflect.Value(nil))
-		}
-	}
-	return nil
+	return prototype.Bind(binder)
 }
 
 func (b *ResourceManagerBinder) registerRoute(url string, rvResource reflect.Value) error {

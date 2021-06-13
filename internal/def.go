@@ -43,7 +43,12 @@ type (
 	RequestHandleModule interface {
 		CanSetSuccessor() bool
 		SetSuccessor(successor RequestHandleModule)
-		ProcessRequest(ctx *RequestCtx)
+		ProcessRequest(ctx *RequestCtx, recoverService RecoverService)
+	}
+
+	RecoverService interface {
+		Panic(err interface{})
+		Recover() interface{}
 	}
 )
 

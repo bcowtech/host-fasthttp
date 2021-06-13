@@ -19,10 +19,11 @@ func NewFasthttpRequestWorker() *FasthttpRequestWorker {
 }
 
 func (w *FasthttpRequestWorker) ProcessRequest(ctx *RequestCtx) {
-	w.requestHandleService.ProcessRequest(ctx)
+	recover := RecoverServiceImpl{}
+	w.requestHandleService.ProcessRequest(ctx, &recover)
 }
 
-func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx) {
+func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx, recoverable RecoverService) {
 	var (
 		method = w.routeResolveService.ResolveHttpMethod(ctx)
 		path   = w.routeResolveService.ResolveHttpPath(ctx)
@@ -36,6 +37,7 @@ func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx) {
 	defer func() {
 		err := recover()
 		if err != nil {
+			recoverable.Panic(err)
 			w.processError(ctx, err)
 		}
 	}()

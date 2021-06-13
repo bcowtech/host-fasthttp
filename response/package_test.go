@@ -3,7 +3,6 @@ package response
 import (
 	"bufio"
 	"context"
-	"reflect"
 	"testing"
 	"time"
 
@@ -30,13 +29,6 @@ func TestSuccess(t *testing.T) {
 				}
 				if v.StatusCode() != fasthttp.StatusOK {
 					t.Errorf("assert 'Response.StatusCode()':: expected '%v', got '%v'", fasthttp.StatusOK, v.StatusCode())
-				}
-				if v.ContentType() != "text/plain" {
-					t.Errorf("assert 'Response.ContentType()':: expected '%v', got '%v'", "text/plain", v.ContentType())
-				}
-				expectedBody := []byte("success message")
-				if !reflect.DeepEqual(v.Body(), expectedBody) {
-					t.Errorf("assert 'Response.Body()':: expected '%v', got '%v'", expectedBody, v.Body())
 				}
 			}
 		},
@@ -95,10 +87,6 @@ func TestError(t *testing.T) {
 				}
 				if v.StatusCode() != fasthttp.StatusBadRequest {
 					t.Errorf("assert 'Response.StatusCode()':: expected '%v', got '%v'", fasthttp.StatusOK, v.StatusCode())
-				}
-				var expectedBody []byte = []byte("error message")
-				if !reflect.DeepEqual(v.Body(), expectedBody) {
-					t.Errorf("assert 'Response.Body()':: expected '%v', got '%v'", expectedBody, v.Body())
 				}
 			}
 		},

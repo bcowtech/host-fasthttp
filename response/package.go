@@ -13,10 +13,8 @@ func Success(ctx *http.RequestCtx, contentType string, body []byte) {
 	storeResponse(
 		ctx,
 		&responseImpl{
-			flag:        SUCCESS,
-			statusCode:  ctx.Response.StatusCode(),
-			contentType: contentType,
-			body:        body,
+			flag:       SUCCESS,
+			statusCode: ctx.Response.StatusCode(),
 		},
 	)
 }
@@ -28,10 +26,8 @@ func Failure(ctx *http.RequestCtx, contentType string, message []byte, statusCod
 	storeResponse(
 		ctx,
 		&responseImpl{
-			flag:        FAILURE,
-			statusCode:  statusCode,
-			contentType: contentType,
-			body:        message,
+			flag:       FAILURE,
+			statusCode: statusCode,
 		},
 	)
 }

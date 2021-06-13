@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/bcowtech/host"
 	"github.com/bcowtech/structproto"
 	"github.com/bcowtech/structproto/util/reflectutil"
 )
@@ -36,5 +37,24 @@ func (b *ResourceBinder) Bind(field structproto.FieldInfo, target reflect.Value)
 }
 
 func (b *ResourceBinder) Deinit(context *structproto.StructProtoContext) error {
+	return b.preformInitMethod(context)
+}
+
+func (b *ResourceBinder) preformInitMethod(context *structproto.StructProtoContext) error {
+	rv := context.Target()
+	if rv.CanAddr() {
+		rv = rv.Addr()
+		// call resource.Init()
+		fn := rv.MethodByName(host.APP_COMPONENT_INIT_METHOD)
+		if fn.IsValid() {
+			if fn.Kind() != reflect.Func {
+				return fmt.Errorf("fail to Init() resource. cannot find func %s() within type %s\n", host.APP_COMPONENT_INIT_METHOD, rv.Type().String())
+			}
+			if fn.Type().NumIn() != 0 || fn.Type().NumOut() != 0 {
+				return fmt.Errorf("fail to Init() resource. %s.%s() type should be func()\n", rv.Type().String(), host.APP_COMPONENT_INIT_METHOD)
+			}
+			fn.Call([]reflect.Value(nil))
+		}
+	}
 	return nil
 }

@@ -2,13 +2,15 @@ package response
 
 const (
 	// response flag
-	SUCCESS int = iota
+	SUCCESS ResponseFlag = iota
 	FAILURE
+
+	UNKNOWN ResponseFlag = -1
 )
 
+type ResponseFlag int
+
 type Response interface {
-	Flag() int
+	Flag() ResponseFlag
 	StatusCode() int
-	ContentType() string
-	Body() []byte
 }

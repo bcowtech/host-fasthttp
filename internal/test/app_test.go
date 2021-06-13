@@ -208,7 +208,7 @@ func TestApp(t *testing.T) {
 
 	var expectedErrorCount = 2
 	if errorCount != expectedErrorCount {
-		t.Errorf("assert 'Host.ListenAddress':: expected '%v', got '%v'", expectedErrorCount, errorCount)
+		t.Errorf("assert 'errorCount':: expected '%v', got '%v'", expectedErrorCount, errorCount)
 	}
 
 	// assert app.Host
