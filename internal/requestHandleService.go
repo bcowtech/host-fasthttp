@@ -19,7 +19,7 @@ func (s *RequestHandleService) Register(successor RequestHandleModule) {
 	s.handlers = append(s.handlers, successor)
 }
 
-func (s *RequestHandleService) ProcessRequest(ctx *RequestCtx, recover RecoverService) {
+func (s *RequestHandleService) ProcessRequest(ctx *RequestCtx, recover *RecoverService) {
 	if handler := s.first(); handler != nil {
 		handler.ProcessRequest(ctx, recover)
 	}

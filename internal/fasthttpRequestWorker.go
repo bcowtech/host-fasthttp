@@ -19,11 +19,10 @@ func NewFasthttpRequestWorker() *FasthttpRequestWorker {
 }
 
 func (w *FasthttpRequestWorker) ProcessRequest(ctx *RequestCtx) {
-	recover := RecoverServiceImpl{}
-	w.requestHandleService.ProcessRequest(ctx, &recover)
+	w.requestHandleService.ProcessRequest(ctx, new(RecoverService))
 }
 
-func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx, recoverable RecoverService) {
+func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx, recover *RecoverService) {
 	var (
 		method = w.routeResolveService.ResolveHttpMethod(ctx)
 		path   = w.routeResolveService.ResolveHttpPath(ctx)
@@ -34,25 +33,25 @@ func (w *FasthttpRequestWorker) internalProcessRequest(ctx *RequestCtx, recovera
 		Path:   path,
 	}
 
-	defer func() {
-		err := recover()
-		if err != nil {
-			recoverable.Panic(err)
-			w.processError(ctx, err)
-		}
-	}()
+	recover.
+		Defer(func(err interface{}) {
+			if err != nil {
+				w.processError(ctx, err)
+			}
+		}).
+		Do(func() {
+			routePath = w.rewriteRequest(ctx, routePath)
+			if routePath == nil {
+				panic("invalid RoutePath. The RouttPath should not be nil.")
+			}
 
-	routePath = w.rewriteRequest(ctx, routePath)
-	if routePath == nil {
-		panic("invalid RoutePath. The RouttPath should not be nil.")
-	}
-
-	handler := w.router.Get(routePath.Method, routePath.Path)
-	if handler != nil {
-		handler(ctx)
-	} else {
-		w.processUnhandledRequest(ctx)
-	}
+			handler := w.router.Get(routePath.Method, routePath.Path)
+			if handler != nil {
+				handler(ctx)
+			} else {
+				w.processUnhandledRequest(ctx)
+			}
+		})
 }
 
 func (w *FasthttpRequestWorker) init() {

@@ -20,6 +20,6 @@ func (r *RequestHandleModuleImpl) SetSuccessor(successor RequestHandleModule) {
 	panic("unsupported operation")
 }
 
-func (r *RequestHandleModuleImpl) ProcessRequest(ctx *RequestCtx, recover RecoverService) {
+func (r *RequestHandleModuleImpl) ProcessRequest(ctx *RequestCtx, recover *RecoverService) {
 	r.worker.internalProcessRequest(ctx, recover)
 }

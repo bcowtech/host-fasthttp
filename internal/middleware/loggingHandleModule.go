@@ -22,36 +22,37 @@ func (h *LoggingHandleModule) SetSuccessor(successor RequestHandleModule) {
 	h.successor = successor
 }
 
-func (h *LoggingHandleModule) ProcessRequest(ctx *RequestCtx, recover RecoverService) {
+func (h *LoggingHandleModule) ProcessRequest(ctx *RequestCtx, recover *RecoverService) {
 	if h.successor != nil {
 		eventLog := h.loggingService.CreateEventLog()
 
-		defer func() {
-			err := recover.Recover()
+		recover.
+			Defer(func(err interface{}) {
+				resp := h.getResponse(ctx)
+				if err != nil {
+					defer func() {
+						if resp != nil {
+							eventLog.WriteResponse(ctx, resp.Flag())
+						} else {
+							eventLog.WriteError(ctx, err, debug.Stack())
+						}
+						eventLog.Flush()
+					}()
 
-			resp := h.getResponse(ctx)
-			if err != nil {
-				defer func() {
+					// NOTE: we should not handle error here, due to the underlying RequestHandler
+					// will handle it.
+				} else {
 					if resp != nil {
 						eventLog.WriteResponse(ctx, resp.Flag())
 					} else {
-						eventLog.WriteError(ctx, err, debug.Stack())
+						eventLog.WriteResponse(ctx, response.UNKNOWN)
 					}
 					eventLog.Flush()
-				}()
-
-				// NOTE: we should not handle error here, due to the underlying RequestHandler
-				// will handle it.
-			} else {
-				if resp != nil {
-					eventLog.WriteResponse(ctx, resp.Flag())
-				} else {
-					eventLog.WriteResponse(ctx, response.UNKNOWN)
 				}
-				eventLog.Flush()
-			}
-		}()
-		h.successor.ProcessRequest(ctx, recover)
+			}).
+			Do(func() {
+				h.successor.ProcessRequest(ctx, recover)
+			})
 	}
 }
 
