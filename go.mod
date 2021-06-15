@@ -4,9 +4,9 @@ go 1.14
 
 require (
 	github.com/andybalholm/brotli v1.0.2 // indirect
-	github.com/bcowtech/config v0.0.0-20210610150253-9db2d96aa4da
-	github.com/bcowtech/host v0.0.0-20210610150439-bce3aca8d48b
-	github.com/bcowtech/structproto v0.1.1-0.20210610061830-34769a01dac0
+	github.com/bcowtech/config v0.0.0-20210615123440-992bfe47f7b8
+	github.com/bcowtech/host v0.0.0-20210615123725-0541d424bd4b
+	github.com/bcowtech/structproto v0.1.1-0.20210615123004-62919aed6983
 	github.com/klauspost/compress v1.12.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/valyala/fasthttp v1.24.0
