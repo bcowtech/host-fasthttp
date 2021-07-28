@@ -20,9 +20,10 @@ type FasthttpHost struct {
 
 	requestWorker *FasthttpRequestWorker
 
+	wg          sync.WaitGroup
+	locker      Locker
 	initialized bool
 	running     bool
-	wg          sync.WaitGroup
 }
 
 func (h *FasthttpHost) Start(ctx context.Context) {
@@ -32,14 +33,11 @@ func (h *FasthttpHost) Start(ctx context.Context) {
 	if h.running {
 		return
 	}
-	h.running = true
 
-	defer func() {
-		err := recover()
-		if err != nil {
-			h.running = false
-		}
-	}()
+	h.locker.Lock(
+		func() {
+			h.running = true
+		})
 
 	s := h.Server
 
@@ -50,16 +48,22 @@ func (h *FasthttpHost) Start(ctx context.Context) {
 }
 
 func (h *FasthttpHost) Stop(ctx context.Context) error {
-	h.wg.Wait()
+	if !h.running {
+		return nil
+	}
 
 	var (
 		server = h.Server
 	)
 
 	defer func() {
-		h.running = false
+		h.locker.Lock(
+			func() {
+				h.running = false
+			})
 	}()
 
+	h.wg.Wait()
 	return server.Shutdown()
 }
 
@@ -81,7 +85,10 @@ func (h *FasthttpHost) init() {
 	h.configCompress()
 	h.configListenAddress()
 
-	h.initialized = true
+	h.locker.Lock(
+		func() {
+			h.initialized = true
+		})
 }
 
 func (h *FasthttpHost) configRequestHandler() {
