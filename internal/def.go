@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"log"
+	"os"
 	"reflect"
 
 	"github.com/valyala/fasthttp"
@@ -11,12 +13,16 @@ const (
 	HEADER_XHTTP_METHOD = "X-Http-Method"
 
 	StatusNotFound = 404
+
+	LOGGER_PREFIX = "[bcowtech/host-fasthttp] "
 )
 
 var (
 	FasthttpHostServiceInstance = new(FasthttpHostService)
 
 	typeOfHost = reflect.TypeOf(FasthttpHost{})
+
+	logger *log.Logger = log.New(os.Stdout, LOGGER_PREFIX, log.LstdFlags|log.Lmsgprefix)
 )
 
 // import

@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"log"
 	"net"
 	"sync"
 
@@ -41,9 +40,9 @@ func (h *FasthttpHost) Start(ctx context.Context) {
 
 	s := h.Server
 
-	log.Printf("[bcowtech/host-fasthttp] %s listening on address %s\n", h.Server.Name, h.ListenAddress)
+	logger.Printf("%% Notice: %s listening on address %s\n", h.Server.Name, h.ListenAddress)
 	if err := s.ListenAndServe(h.ListenAddress); err != nil {
-		log.Fatalf("[bcowtech/host-fasthttp] %% error in ListenAndServe: %v\n", err)
+		logger.Fatalf("%% Error: error in ListenAndServe: %v\n", err)
 	}
 }
 
