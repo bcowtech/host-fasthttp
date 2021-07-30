@@ -23,15 +23,30 @@ type FasthttpHost struct {
 	locker      Locker
 	initialized bool
 	running     bool
+	disposed    bool
 }
 
 func (h *FasthttpHost) Start(ctx context.Context) {
+	if h.disposed {
+		logger.Panic("the FasthttpHost has been disposed")
+	}
 	if !h.initialized {
-		panic("the FasthttpHost havn't be initialized yet")
+		logger.Panic("the FasthttpHost havn't be initialized yet")
 	}
 	if h.running {
 		return
 	}
+
+	var err error
+	defer func() {
+		if err != nil {
+			h.locker.Lock(
+				func() {
+					h.running = false
+					h.disposed = true
+				})
+		}
+	}()
 
 	h.locker.Lock(
 		func() {
@@ -41,12 +56,15 @@ func (h *FasthttpHost) Start(ctx context.Context) {
 	s := h.Server
 
 	logger.Printf("%% Notice: %s listening on address %s\n", h.Server.Name, h.ListenAddress)
-	if err := s.ListenAndServe(h.ListenAddress); err != nil {
+	if err = s.ListenAndServe(h.ListenAddress); err != nil {
 		logger.Fatalf("%% Error: error in ListenAndServe: %v\n", err)
 	}
 }
 
 func (h *FasthttpHost) Stop(ctx context.Context) error {
+	if h.disposed {
+		return nil
+	}
 	if !h.running {
 		return nil
 	}
@@ -59,6 +77,7 @@ func (h *FasthttpHost) Stop(ctx context.Context) error {
 		h.locker.Lock(
 			func() {
 				h.running = false
+				h.disposed = true
 			})
 	}()
 
