@@ -6,6 +6,8 @@ import (
 	"github.com/bcowtech/structproto"
 )
 
+var _ host.Middleware = new(ResourceManagerMiddleware)
+
 type ResourceManagerMiddleware struct {
 	ResourceManager interface{}
 }

@@ -5,6 +5,8 @@ import (
 	. "github.com/bcowtech/host-fasthttp/internal"
 )
 
+var _ host.Middleware = new(RewriterMiddleware)
+
 type RewriterMiddleware struct {
 	Handler RewriteHandler
 }

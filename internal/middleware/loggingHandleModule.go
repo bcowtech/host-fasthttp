@@ -25,6 +25,7 @@ func (h *LoggingHandleModule) SetSuccessor(successor RequestHandleModule) {
 func (h *LoggingHandleModule) ProcessRequest(ctx *RequestCtx, recover *RecoverService) {
 	if h.successor != nil {
 		eventLog := h.loggingService.CreateEventLog()
+		eventLog.WriteRequest(ctx)
 
 		recover.
 			Defer(func(err interface{}) {

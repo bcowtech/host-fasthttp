@@ -20,6 +20,7 @@ type (
 	}
 
 	EventLog interface {
+		WriteRequest(ctx *internal.RequestCtx)
 		WriteError(ctx *internal.RequestCtx, err interface{}, stackTrace []byte)
 		WriteResponse(ctx *internal.RequestCtx, flag response.ResponseFlag)
 		Flush()

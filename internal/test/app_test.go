@@ -73,9 +73,9 @@ func TestApp(t *testing.T) {
 		}).
 		Configure(func(config interface{}) {})
 
-	startCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	runCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	if err := starter.Start(startCtx); err != nil {
+	if err := starter.Start(runCtx); err != nil {
 		t.Error(err)
 	}
 
@@ -200,10 +200,11 @@ func TestApp(t *testing.T) {
 		errorBuffer.Reset()
 	}
 
-	stopCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-	if err := starter.Stop(stopCtx); err != nil {
-		t.Error(err)
+	select {
+	case <-runCtx.Done():
+		if err := starter.Stop(context.Background()); err != nil {
+			t.Error(err)
+		}
 	}
 
 	var expectedErrorCount = 2
