@@ -122,9 +122,8 @@ func (h *FasthttpHost) configRequestHandler() {
 
 	s.Handler = func(ctx *RequestCtx) {
 		h.wg.Add(1)
-		defer func() {
-			h.wg.Done()
-		}()
+		defer h.wg.Done()
+
 		requestHandler(ctx)
 	}
 }
