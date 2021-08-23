@@ -1,14 +1,3 @@
-<style type='text/css'>
-h2:before {
-  content:"¶ ";
-  color:lightgray
-}
-.underline {
-text-decoration: underline;
-  text-decoration-color: red;
-}
-</style>
-
 **August 2021**  |  **v1.0**
 
 
